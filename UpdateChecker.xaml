@@ -1,0 +1,22 @@
+﻿<Window x:Class="OsuBackgroundPurger.UpdateChecker"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Background="#131313"
+        mc:Ignorable="d"
+        ResizeMode="CanMinimize"
+        Closing="Window_Closing"
+        Title="Update available (%%newVer%%)" Height="200" Width="500">
+    <Grid Margin="10">
+        <StackPanel Orientation="Horizontal" Height="110" VerticalAlignment="Top">
+            <Image Source="Resources/Logo.png" Width="100" Height="100"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Height="100">
+                <Label Content="A new update is available!" FontSize="24"/>
+                <Rectangle Height="10"/>
+                <TextBlock><Run x:Name="UpdateCurrentText" Text="You are running version %%curVer%%," Foreground="#FFC5C5C5"/><LineBreak/><Run x:Name="UpdateNewText" Text="version %%newVer%% is available for download on " Foreground="#FFC5C5C5"/><Hyperlink x:Name="UpdateUri" NavigateUri="https://www.github.com">GitHub.com</Hyperlink></TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <Button x:Name="UpdateButton" Content="Update Now" Height="35" Width="100" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="UpdateButton_Click"/>
+    </Grid>
+</Window>
