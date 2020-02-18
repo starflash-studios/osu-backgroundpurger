@@ -8,37 +8,47 @@ using Octokit;
 
 namespace OsuBackgroundPurger {
     public partial class UpdateChecker {
-        public static Version currentVersion = new Version(0, 1, 0 ,0);
-        public const string company = "starflash_studios";
-        public const string product = "osu!backgroundpurger";
+        public static Version currentVersion = new Version(0, 0, 9 ,0);
+        public const string company = "starflash-studios";
+        public const string product = "osu-backgroundpurger";
 
-        readonly Window parent;
+        Window parent;
 
         public UpdateChecker() {
             InitializeComponent();
-            Init();
         }
 
-        public UpdateChecker(Window main) {
-            InitializeComponent();
-            Hide();
-            parent = main;
-            Init();
-        }
-
-        public static void Create(Window main) {
-            main.Hide();
-            _ = new UpdateChecker(main);
+        public static void Create(Window main = null) {
+            UpdateChecker uC = new UpdateChecker();
+            if (main != null) { uC.parent = main; }
+            uC.Init();
         }
 
         public void Init() {
+            Debug.WriteLine("Init Called, Updating UI");
+            Debug.WriteLine("Parent set");
             InitUI();
 
-            (Version latestVersion, bool hasUpdate) = GetUpdate().Result;
+            Debug.WriteLine("Checking for update; Current Version: " + currentVersion);
+            bool hasUpdate = false;
+            Version latestVersion = default;
+            try {
+                Task<Tuple<Version, bool>> a = GetUpdate();
+                Debug.WriteLine("Created Task; Awaiting result");
+                a.Wait();
+                (Version latest, bool needsUpdate) = a.Result;
+                Debug.WriteLine("Latest Version: " + latest + " | Has Update: " + hasUpdate);
+                hasUpdate = needsUpdate;
+                latestVersion = latest;
+            } catch {
+                hasUpdate = false;
+            }
             if (hasUpdate) {
+                Debug.WriteLine("Update Required; Showing Popup");
                 UIReplace(currentVersion, latestVersion);
                 Show();
             } else {
+                Debug.WriteLine("No Update Required; Showing Parent Window (if existent)");
                 parent?.Show();
                 Hide();
                 Close();
@@ -53,25 +63,18 @@ namespace OsuBackgroundPurger {
         /// <param name="product"></param>
         /// <param name="company"></param>
         /// <returns>Bool: True = Needs Update, False = Up to date</returns>
-        public static async Task<bool> CheckForUpdate(string product = product, string company = company) {
-            GitHubClient client = new GitHubClient(new ProductHeaderValue(product));
-            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(company, product);
-            foreach (Release release in releases) {
-                Debug.WriteLine("Found release: " + release.TagName + " >> " + release.Name);
-            }
-            Version latest = new Version(releases[0]);
-            Debug.WriteLine("Latest version: " + latest);
-            Debug.WriteLine("Current version: " + currentVersion);
-
-            return currentVersion.IsOlder(latest);
-        }
+        public static async Task<bool> CheckForUpdate(string product = product, string company = company) => (await GetUpdate(product, company)).Item2;
 
         public static async Task<Tuple<Version, bool>> GetUpdate(string product = product, string company = company) {
             GitHubClient client = new GitHubClient(new ProductHeaderValue(product));
+            Debug.WriteLine("Client: " + (client != null));
+            Debug.WriteLine("Checking releases with Owner: " + company + " & Product: " + product);
             IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(company, product);
+            Debug.WriteLine("<<START>>");
             foreach (Release release in releases) {
-                Debug.WriteLine("Found release: " + release.TagName + " >> " + release.Name);
+                Debug.WriteLine("\tFound release: " + release.TagName + " >> " + release.Name);
             }
+            Debug.WriteLine("<<END>>");
             Version latest = new Version(releases[0]);
             Debug.WriteLine("Latest version: " + latest);
             Debug.WriteLine("Current version: " + currentVersion);

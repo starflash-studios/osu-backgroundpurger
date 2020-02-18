@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OsuBackgroundPurger"
         Background="#131313"
+        Closing="Window_Closing"
         mc:Ignorable="d"
         Title="osu!backgroundpurger" Height="200" Width="400">
     <Grid Margin="10">

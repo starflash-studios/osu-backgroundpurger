@@ -1,38 +1,46 @@
-﻿using System;
+﻿//This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+//This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+//You should have received a copy of the GNU General Public License along with this program. If not, see<https://www.gnu.org/licenses/>.
+
+//Starflash Studios, hereby disclaims all copyright interest in the program 'Osu!BackgroundPurger' (which is an automated osu!beatmap background remover) written by Cody Bock.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Windows.Threading;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace OsuBackgroundPurger {
     public partial class MainWindow {
         public static bool ProcessFix;
+        public static bool UpdateUI = true;
         public static MainWindow instance;
+
+        public static int CurrentProcess;
+        public static int CurrentProcessMax;
 
         public MainWindow() {
             InitializeComponent();
             instance = this;
-            _ = new UpdateChecker(this);
+            //Task.Run(CreateUpdater);
+            Task.Run(UIThreadAsync);
+            //Dispatcher.Invoke(UIThreadAsync);
         }
 
-        #region UI
-        void ButtonSingle_Click(object sender, RoutedEventArgs e) {
-            DirectoryInfo[] dirs = GetFolder(true).ToArray();
-            if (dirs == null || dirs.Length < 1) { Debug.Write("Cancelled"); return; }
-            BulkRemove(dirs);
+        public async void CreateUpdater() {
+            Debug.WriteLine("Thread #2 - 1 / 3");
+            Dispatcher.Invoke(() => {
+                Debug.WriteLine("Thread #2 - 2 / 3");
+                UpdateChecker.Create(null);
+            });
+            await Task.Delay(1000);
+            Debug.WriteLine("Thread #2 - 3 / 3");
         }
-
-        void ButtonFolder_Click(object sender, RoutedEventArgs e) {
-            DirectoryInfo dirs = GetFolder(false).FirstOrDefault();
-            if (dirs == null || !dirs.Exists) { Debug.Write("Cancelled"); return; }
-            DirectoryInfo[] subDirs = dirs.GetDirectories().Where(d => d.Exists).ToArray();
-            BulkRemove(subDirs);
-        }
-        #endregion
 
         public static IEnumerable<DirectoryInfo> GetFolder(bool multi = false, DirectoryInfo startLocation = null) {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog {
@@ -46,10 +54,24 @@ namespace OsuBackgroundPurger {
         }
 
         #region General Functions
-        public static void Rename(FileInfo file, string newName, bool resolve = true) {
-            string gen = file.Directory.FullName + "//" + newName;
-            if (File.Exists(gen)) { if (resolve) { File.Delete(gen); } else { return; } }
-            file.MoveTo(file.Directory.FullName + "//" + newName);
+        public static void Rename(FileInfo file, string newName, bool resolve = false) {
+            if (file == null) { Debug.WriteLine("No file selected; Aborting."); return; }
+            if (!file.Exists) { Debug.WriteLine("File: " + file.FullName + " Does not exist; Aborting."); return; }
+
+            Debug.WriteLine("Passed Checks");
+            FileInfo newFile = new FileInfo(file.Directory.FullName + "//" + newName);
+            Debug.WriteLine("New File: " + newFile.Name);
+            if (newFile.Exists) {
+                if (resolve) {
+                    newFile.Delete();
+                    Task.Delay(500);
+                    Debug.WriteLine("^ exists, Deleting");
+                } else {
+                    Debug.WriteLine("^ exists, Aborting");
+                    return;
+                }
+            }
+            file.MoveTo(newFile.FullName);
         }
 
         public static void SmartValidate(FileInfo file) {
@@ -69,16 +91,12 @@ namespace OsuBackgroundPurger {
             return fileName.Substring(fileName.LastIndexOf("."[0])).TrimStart("."[0]);
         }
 
-        public static void SetProgress(int value, int max = -1) {
-            instance.Progress.Minimum = 0;
-            instance.Progress.Maximum = max < 0 ? instance.Progress.Maximum : max;
-            instance.Progress.Value = value;
-        }
-
         #endregion
 
         #region Management
         public static void BulkRemove(DirectoryInfo[] folders) {
+            CurrentProcessMax = folders.Length;
+            CurrentProcess = 0;
             foreach (DirectoryInfo f in folders) { _ = RemoveBackground(f); }
             Debug.WriteLine("<<COMPLETED>>");
         }
@@ -118,6 +136,7 @@ namespace OsuBackgroundPurger {
                 }
             }
             Debug.WriteLine("<MANAGED>");
+            CurrentProcess++;
             return null;
         }
 
@@ -176,6 +195,56 @@ namespace OsuBackgroundPurger {
 
         #endregion
 
+        #region UI
+        public void UIThreadAsync() {
+            UpdateUI = true;
+
+            try {
+                Dispatcher.Invoke(() => {
+                    while (UpdateUI) {
+                        Debug.WriteLine("----------------------------------------------: " + CurrentProcess + " / " + CurrentProcessMax);
+                        SetProgress(CurrentProcess, CurrentProcessMax);
+                        ExecuteWait(() => Thread.Sleep(300));
+                    }
+                });
+            } catch {
+                Debug.WriteLine("Left loop");
+                UpdateUI = false;
+                Task.Delay(1000).ContinueWith(t => UIThreadAsync());
+            }
+        }
+
+        public static void ExecuteWait(Action action) {
+            DispatcherFrame waitFrame = new DispatcherFrame();
+            IAsyncResult op = action.BeginInvoke(dummy => waitFrame.Continue = false, null);
+            Dispatcher.PushFrame(waitFrame);
+            action.EndInvoke(op);
+        }
+
+        public void SetProgress(int value, int max = -1) {
+            Progress.Minimum = 0;
+            Progress.Maximum = max < 0 ? Progress.Maximum : max == Progress.Minimum ? Progress.Minimum + 1 : max;
+            Progress.Value = value > Progress.Maximum ? Progress.Maximum : value;
+            ProgressLabel.Content = value + " / " + Progress.Maximum;
+        }
+
+        public void IncrementProgress() => SetProgress((int)Progress.Value + 1, -1);
+
+        void ButtonSingle_Click(object sender, RoutedEventArgs e) {
+            CurrentProcessMax = 0;
+            DirectoryInfo[] dirs = GetFolder(true).ToArray();
+            if (dirs == null || dirs.Length < 1) { Debug.Write("Cancelled"); return; }
+            BulkRemove(dirs);
+        }
+
+        void ButtonFolder_Click(object sender, RoutedEventArgs e) {
+            CurrentProcessMax = 0;
+            DirectoryInfo dirs = GetFolder(false).FirstOrDefault();
+            if (dirs == null || !dirs.Exists) { Debug.Write("Cancelled"); return; }
+            DirectoryInfo[] subDirs = dirs.GetDirectories().Where(d => d.Exists).ToArray();
+            BulkRemove(subDirs);
+        }
+
         void ToggleFix_Click(object sender, RoutedEventArgs e) {
             ProcessFix = !ProcessFix;
             ToggleFix.IsChecked = ProcessFix;
@@ -183,5 +252,8 @@ namespace OsuBackgroundPurger {
         }
 
         void ToggleLabel_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => ToggleFix_Click(sender, null);
+        
+        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => UpdateUI = false;
+        #endregion
     }
 }
