@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -8,11 +8,10 @@ using Octokit;
 
 namespace OsuBackgroundPurger {
     public partial class UpdateChecker {
-        public static Version currentVersion = new Version(0, 0, 9 ,0);
         public const string company = "starflash-studios";
         public const string product = "osu-backgroundpurger";
 
-        Window parent;
+        public Window parentWindow;
 
         public UpdateChecker() {
             InitializeComponent();
@@ -20,26 +19,25 @@ namespace OsuBackgroundPurger {
 
         public static void Create(Window main = null) {
             UpdateChecker uC = new UpdateChecker();
-            if (main != null) { uC.parent = main; }
+            if (main != null) { uC.parentWindow = main; }
             uC.Init();
         }
 
-        public void Init() {
+        public async void Init() {
             Debug.WriteLine("Init Called, Updating UI");
             Debug.WriteLine("Parent set");
             InitUI();
 
+            Version currentVersion = Assembly.GetEntryAssembly().GetName().Version;
             Debug.WriteLine("Checking for update; Current Version: " + currentVersion);
-            bool hasUpdate = false;
+
             Version latestVersion = default;
+            bool hasUpdate;
             try {
-                Task<Tuple<Version, bool>> a = GetUpdate();
+                (bool b, Version v) = await CheckForUpdate();
                 Debug.WriteLine("Created Task; Awaiting result");
-                a.Wait();
-                (Version latest, bool needsUpdate) = a.Result;
-                Debug.WriteLine("Latest Version: " + latest + " | Has Update: " + hasUpdate);
-                hasUpdate = needsUpdate;
-                latestVersion = latest;
+                hasUpdate = b;
+                latestVersion = v;
             } catch {
                 hasUpdate = false;
             }
@@ -49,103 +47,36 @@ namespace OsuBackgroundPurger {
                 Show();
             } else {
                 Debug.WriteLine("No Update Required; Showing Parent Window (if existent)");
-                parent?.Show();
+                parentWindow?.Show();
                 Hide();
                 Close();
             }
         }
 
-
         #region Update Checking
-        /// <summary>
-        /// Returns whether the program needs an update or not
-        /// </summary>
-        /// <param name="product"></param>
-        /// <param name="company"></param>
-        /// <returns>Bool: True = Needs Update, False = Up to date</returns>
-        public static async Task<bool> CheckForUpdate(string product = product, string company = company) => (await GetUpdate(product, company)).Item2;
+        public async Task<(bool, Version v)> CheckForUpdate() {
+            Version curVer = Assembly.GetEntryAssembly().GetName().Version;
 
-        public static async Task<Tuple<Version, bool>> GetUpdate(string product = product, string company = company) {
-            GitHubClient client = new GitHubClient(new ProductHeaderValue(product));
-            Debug.WriteLine("Client: " + (client != null));
-            Debug.WriteLine("Checking releases with Owner: " + company + " & Product: " + product);
-            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(company, product);
-            Debug.WriteLine("<<START>>");
-            foreach (Release release in releases) {
-                Debug.WriteLine("\tFound release: " + release.TagName + " >> " + release.Name);
+            GitHubClient client = new GitHubClient(new ProductHeaderValue("osu-backgroundpurger", "v" + curVer));
+            IRepositoriesClient repo = client.Repository;
+
+            foreach (Release release in await repo.Release.GetAll("starflash-studios", "osu-backgroundpurger")) {
+                Debug.WriteLine("Release Found: " + release.TagName);
+                Version v = Version.Parse(release.TagName);
+                Debug.WriteLine("\tRelease Version: " + v);
+                if (v > curVer) {
+                    Debug.WriteLine("Update Required (" + curVer + " >> " + v + ")");
+                    return (true, v);
+                }
             }
-            Debug.WriteLine("<<END>>");
-            Version latest = new Version(releases[0]);
-            Debug.WriteLine("Latest version: " + latest);
-            Debug.WriteLine("Current version: " + currentVersion);
-
-            return new Tuple<Version, bool>(latest, currentVersion.IsOlder(latest));
+            Debug.WriteLine("Update-to-date");
+            return (false, null);
         }
 
         public static string Url(string product = product, string company = company) => $"https://www.github.com/{company}/{product}/";
 
-        public static void GotoUpdate(string product = product, string company = company) => Process.Start(Url(product, company));
+        public static void GotoUpdate(string product = product, string company = company) => Process.Start(Url(product, company) + "releases/");
 
-        public struct Version {
-            public int major;
-            public int sector;
-            public int minor;
-            public int fix;
-
-            public override string ToString() => $"{major}.{sector}.{minor}.{fix}";
-
-            public Version(int maj = 0, int min = 0, int sec = 0, int typ = 0) {
-                major = maj;
-                sector = min;
-                minor = sec;
-                fix = typ;
-            }
-
-            public Version(string parse) {
-                string[] split = parse.Split("."[0]);
-                major = int.Parse(split[0]);
-                sector = int.Parse(split[1]);
-                minor = int.Parse(split[2]);
-                fix = int.Parse(split[3]);
-            }
-
-            public Version(Release release) {
-                string[] split = release.TagName.Split("."[0]);
-                major = int.Parse(split[0]);
-                sector = int.Parse(split[1]);
-                minor = int.Parse(split[2]);
-                fix = int.Parse(split[3]);
-            }
-
-            public Version EnforcePositive() => new Version(major.Positive(), sector.Positive(), minor.Positive(), fix.Positive());
-
-            /// <summary>
-            /// Returns false if 'other' is a higher version
-            /// </summary>
-            /// <param name="other"></param>
-            /// <param name="levelOfScrutiny">0: Any value, 1: Security or above, 2: Minor or above, 3: Major or above</param>
-            /// <returns></returns>
-            public bool IsNewer(Version other, int levelOfScrutiny = 0) => !IsOlder(other, levelOfScrutiny);
-
-            /// <summary>
-            /// Returns true if 'other' is a higher version
-            /// </summary>
-            /// <param name="other"></param>
-            /// <param name="levelOfScrutiny">0: Any value, 1: Security or above, 2: Minor or above, 3: Major or above</param>
-            /// <returns></returns>
-            public bool IsOlder(Version other, int levelOfScrutiny = 0) {
-                switch (levelOfScrutiny) {
-                    case 1:
-                        return other.major > major || other.sector > sector || other.minor > minor;
-                    case 2:
-                        return other.major > major || other.sector > sector;
-                    case 3:
-                        return other.major > major;
-                    default:
-                        return other.major > major || other.sector > sector || other.minor > minor || other.fix > fix;
-                }
-            }
-        }
         #endregion
 
         #region UI
@@ -161,6 +92,7 @@ namespace OsuBackgroundPurger {
         }
 
         public void UIReplace(Version current, Version latest) {
+            if (latest == null || latest == default) { latest = current; }
             Title = Replace(templateTitle, current, latest);
             UpdateCurrentText.Text = Replace(templateCurVerText, current, latest);
             UpdateNewText.Text = Replace(templateNewVerText, current, latest);
@@ -170,7 +102,7 @@ namespace OsuBackgroundPurger {
 
         void UpdateButton_Click(object sender, RoutedEventArgs e) => GotoUpdate();
         
-        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => parent?.Show();
+        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => parentWindow?.Show();
 
         #endregion
     }

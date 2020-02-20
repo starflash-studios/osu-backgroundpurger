@@ -13,7 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+
 using Microsoft.WindowsAPICodePack.Dialogs;
+
+using Octokit;
 
 namespace OsuBackgroundPurger {
     public partial class MainWindow {
@@ -27,19 +30,26 @@ namespace OsuBackgroundPurger {
         public MainWindow() {
             InitializeComponent();
             instance = this;
-            //Task.Run(CreateUpdater);
+
+            Task.Run(CreateUpdater);
             Task.Run(UIThreadAsync);
             //Dispatcher.Invoke(UIThreadAsync);
         }
 
+
+        public static Version GetVersion(Release release) {
+            int[] versions = Array.ConvertAll(release.TagName.Split("."[0]), int.Parse);
+            return versions == null || versions.Length < 3 ? null : new Version(versions[0], versions[1], versions[2], versions[3]);
+        }
+
         public async void CreateUpdater() {
-            Debug.WriteLine("Thread #2 - 1 / 3");
             Dispatcher.Invoke(() => {
-                Debug.WriteLine("Thread #2 - 2 / 3");
-                UpdateChecker.Create(null);
+                UpdateChecker uC = new UpdateChecker {
+                    parentWindow = this
+                };
+                uC.Init();
             });
-            await Task.Delay(1000);
-            Debug.WriteLine("Thread #2 - 3 / 3");
+            await Task.Delay(300);
         }
 
         public static IEnumerable<DirectoryInfo> GetFolder(bool multi = false, DirectoryInfo startLocation = null) {
