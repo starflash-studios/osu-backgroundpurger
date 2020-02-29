@@ -5,6 +5,7 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
+                 Closing="MetroWindow_Closing"
                  Background="#252525"
                  Title="some!exceptions" Height="450" Width="800">
     <Grid Margin="10">

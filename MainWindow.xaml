@@ -4,51 +4,60 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         ResizeMode="CanMinimize"
+        Closing="MetroWindow_Closing"
         Background="#252525"
         PreviewKeyUp="MetroWindow_PreviewKeyUp"
-        Closing="Window_Closing"
         mc:Ignorable="d"
         Title="no!background" Height="250" Width="400">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="130*"/>
+            <RowDefinition Height="150*"/>
             <RowDefinition Height="10*"/>
-            <RowDefinition Height="110*"/>
+            <RowDefinition Height="90*"/>
         </Grid.RowDefinitions>
-        <TabControl x:Name="ModeControl" Grid.Row="0" Margin="-10, -10, -10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TabItem Header="disable">
-                <TabItem.Content>
-                    <Label Margin="4" Content="disables backgrounds without actually deleting them"/>
-                </TabItem.Content>
-            </TabItem>
-            <TabItem Header="enable">
-                <TabItem.Content>
-                    <Label Margin="4" Content="enables backgrounds that were previously disabled"/>
-                </TabItem.Content>
-            </TabItem>
-            <TabItem Header="delete">
-                <TabItem.Content>
-                    <Label Margin="4" Content="permanently deletes backgrounds (cannot be undone)"/>
-                </TabItem.Content>
-            </TabItem>
-            <TabItem Header="blur">
-                <StackPanel Orientation="Vertical" Margin="4, 4, 4, 0">
-                    <Label Content="blurs background image files"/>
-                    <StackPanel Orientation="Horizontal" Margin="10, 0, 0, 0">
-                        <Label Content="effect amount: " VerticalContentAlignment="Center"/>
-                        <mah:NumericUpDown x:Name="BlurProcessInput" Width="200" Height="35" Padding="3" Margin="3" HorizontalAlignment="Left" Minimum="1" Maximum="20" Value="10"/>
+        <ScrollViewer Grid.Row="0" Margin="-10, -10, -10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TabControl x:Name="ModeControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TabItem Header="disable">
+                    <TabItem.Content>
+                        <Label Margin="4, 0, 4, 4" Content="disables backgrounds without actually deleting them"/>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="enable">
+                    <TabItem.Content>
+                        <Label Margin="4, 0, 4, 4" Content="enables backgrounds that were previously disabled"/>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="delete">
+                    <TabItem.Content>
+                        <Label Margin="4, 0, 4, 4" Content="permanently deletes backgrounds (cannot be undone)"/>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="blur">
+                    <StackPanel Orientation="Vertical" Margin="4, 0, 4, 0">
+                        <Label Content="blurs background image files"/>
+                        <StackPanel Orientation="Horizontal" Height="30" Margin="10, 0, 0, 0">
+                            <Label Content="effect amount: " VerticalContentAlignment="Center"/>
+                            <mah:NumericUpDown x:Name="BlurProcessInput" Width="200" HorizontalAlignment="Left" VerticalAlignment="Stretch" Minimum="1" Maximum="20" Value="10"/>
+                        </StackPanel>
+                        <Rectangle Height="5"/>
+                        <ToggleButton x:Name="BlurDeleteVideos" Content="delete video files" Height="20"/>
                     </StackPanel>
-                </StackPanel>
-            </TabItem>
-        </TabControl>
+                </TabItem>
+            </TabControl>
+        </ScrollViewer>
+        <StackPanel Grid.Row="0" x:Name="WarningPanel" Visibility="Hidden" Orientation="Horizontal" Width="40" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonDown="WarningPanel_MouseLeftButtonUp" MouseEnter="WarningPanel_MouseEnter">
+            <iconPacks:PackIconMaterialDesign Kind="Warning" Foreground="#DC481D"/>
+            <Label x:Name="WarningLabel" Content="0" Foreground="#DC481D" Padding="0,0,4,0"/>
+        </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="2">
             <Grid Height="25" Margin="10, 0, 10, 0">
                 <ProgressBar x:Name="Progress" Background="#131313"/>
                 <Label x:Name="ProgressLabel" Content="0 / 0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="10"/>
             </Grid>
             <Rectangle Height="15"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel x:Name="ButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="ButtonSelect" Content="select" Width="100" VerticalAlignment="Stretch" Click="ButtonSelect_Click"/>
                 <Rectangle Width="25"/>
                 <Button x:Name="ButtonFolder" Content="auto" Width="100" VerticalAlignment="Stretch" Click="ButtonFolder_Click"/>

@@ -9,6 +9,7 @@ using Octokit;
 
 namespace OsuBackgroundPurger {
     public partial class UpdateChecker {
+        public static UpdateChecker instance;
         public const string company = "starflash-studios";
         public const string product = "osu-backgroundpurger";
 
@@ -18,12 +19,14 @@ namespace OsuBackgroundPurger {
 
         public UpdateChecker() {
             InitializeComponent();
+            instance = this;
         }
 
         /// <summary>
         /// Creates and initialises the UpdateChecker
         /// </summary>
         public static async void Create(Dispatcher dispatcher, Window window = null) {
+            instance?.Close();
             dispatcher.Invoke(() => {
                 UpdateChecker uC = new UpdateChecker {
                     parentWindow = window
