@@ -17,6 +17,10 @@
                 <TextBlock><Run x:Name="UpdateCurrentText" Text="You are running version %%curVer%%," Foreground="#FFC5C5C5"/><LineBreak/><Run x:Name="UpdateNewText" Text="version %%newVer%% is available for download on " Foreground="#FFC5C5C5"/><Hyperlink x:Name="UpdateUri" NavigateUri="https://www.github.com">GitHub.com</Hyperlink></TextBlock>
             </StackPanel>
         </StackPanel>
-        <Button x:Name="UpdateButton" Content="Update Now" Height="35" Width="100" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="UpdateButton_Click"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button x:Name="ReleasesButton" Content="Goto Releases" Height="35" Width="100" Padding="0" Click="ReleasesButton_Click"/>
+            <Rectangle Width="10"/>
+            <Button x:Name="UpdateButton" Content="Update Now" Height="35" Width="100" Padding="0" Click="UpdateButton_Click"/>
+        </StackPanel>
     </Grid>
 </Window>

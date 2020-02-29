@@ -14,6 +14,7 @@ namespace OsuBackgroundPurger {
         public const string product = "osu-backgroundpurger";
 
         public static Version version => Assembly.GetEntryAssembly().GetName().Version;
+        public static Version latest;
 
         public Window parentWindow;
 
@@ -44,13 +45,12 @@ namespace OsuBackgroundPurger {
             Version currentVersion = Assembly.GetEntryAssembly().GetName().Version;
             Debug.WriteLine("Checking for update; Current Version: " + currentVersion);
 
-            Version latestVersion = default;
             bool hasUpdate;
             try {
                 (bool b, Version v) = await CheckForUpdate();
                 Debug.WriteLine("Created Task; Awaiting result");
                 hasUpdate = b;
-                latestVersion = v;
+                latest = v;
 #pragma warning disable CA1031 // Do not catch general exception types
             } catch {
                 hasUpdate = false;
@@ -58,7 +58,7 @@ namespace OsuBackgroundPurger {
 #pragma warning restore CA1031 // Do not catch general exception types
             if (hasUpdate) {
                 Debug.WriteLine("Update Required; Showing Popup");
-                UIReplace(currentVersion, latestVersion);
+                UIReplace(currentVersion, latest);
                 Show();
             } else {
                 Debug.WriteLine("No Update Required; Showing Parent Window (if existent)");
@@ -110,18 +110,26 @@ namespace OsuBackgroundPurger {
         public static string Url(string product = product, string company = company) => $"https://www.github.com/{company}/{product}/";
 
         /// <summary>
-        /// Opens the GitHub project releases page in the OS's default browser
-        /// </summary>
-        /// <param name="product"></param>
-        /// <param name="company"></param>
-        public static void GotoUpdate(string product = product, string company = company) => Process.Start(Url(product, company) + "releases/");
-
-        /// <summary>
         /// Opens the GitHub project page in the OS's default browser
         /// </summary>
         /// <param name="product"></param>
         /// <param name="company"></param>
         public static void GotoPage(string product = product, string company = company) => Process.Start(Url(product, company));
+
+        /// <summary>
+        /// Opens the GitHub project releases page in the OS's default browser
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="company"></param>
+        public static void GotoReleases(string product = product, string company = company) => Process.Start(Url(product, company) + "releases/");
+
+        /// <summary>
+        /// Opens the GitHub project releases page in the OS's default browser
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="product"></param>
+        /// <param name="company"></param>
+        public static void GotoUpdate(Version version, string product = product, string company = company) => Process.Start(Url(product, company) + "releases/tag/" + version);
 
         #endregion
 
@@ -158,7 +166,9 @@ namespace OsuBackgroundPurger {
         /// <returns></returns>
         public static string Replace(string template, Version current, Version latest) => template.Replace("%%curVer%%", current.ToString()).Replace("%%newVer%%", latest.ToString());
 
-        void UpdateButton_Click(object sender, RoutedEventArgs e) => GotoUpdate();
+        void ReleasesButton_Click(object sender, RoutedEventArgs e) => GotoReleases();
+
+        void UpdateButton_Click(object sender, RoutedEventArgs e) => GotoUpdate(latest);
         
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => parentWindow?.Show();
 
