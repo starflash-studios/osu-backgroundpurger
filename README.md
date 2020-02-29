@@ -1,2 +1,4 @@
-# osu!backgroundpurger
- A simple C#.NET WPF program allowing one to remove the background (images and videos) of osu!beatmaps in bulk.
+# no!backgrounds
+## get 'em out of here!
+
+Liberate your storage space, and the eyes of onlookers, with this automated osu! background / video remover. Also doubles as a background blurrer - for when your underage anime grills are just a little too underage ;)
