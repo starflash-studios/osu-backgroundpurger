@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("osu!backgroundpurger")]
-[assembly: AssemblyDescription("Purges / Disables backgrounds for osu! beatmaps in bulk")]
+[assembly: AssemblyTitle("no!background")]
+[assembly: AssemblyDescription("Liberate your storage space, and the eyes of onlookers, with this automated osu! background / video remover. Also doubles as a background blurrer - for when your underage anime grills are just a little too underage ;)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Starflash Studios")]
-[assembly: AssemblyProduct("osu!backgroundpurger")]
+[assembly: AssemblyProduct("no!background")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.9.2")]
+[assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguage("en")]
