@@ -2,12 +2,16 @@
 Liberate your storage space, and the eyes of onlookers, with this automated osu! background / video remover. Also doubles as a background blurrer - for when your underage anime grills are just a little too underage ;)
 
 ***This program is peppy approved!***
+
 ![PeppyScreenshot](https://user-images.githubusercontent.com/16698604/75625527-e8445c80-5bf9-11ea-9328-a03ce0cf49f4.png)![PeppyStampSmallRotate](https://user-images.githubusercontent.com/16698604/75625578-66086800-5bfa-11ea-9f3c-5109d993743e.png)
+
+
 ![HeaderRequired](https://user-images.githubusercontent.com/16698604/75624946-55ed8a00-5bf4-11ea-91a2-ddcdd45f2092.png)
 # Required
 - [x] [.NET Framework 4.7.2 (Runtime)](https://dotnet.microsoft.com/download/dotnet-framework)
 - [x] Windows 10, 8.1, 8, 7 SP1, Vista / XP (Untested)
 - [ ] A life
+
 
 ![HeaderInstall](https://user-images.githubusercontent.com/16698604/75624945-5423c680-5bf4-11ea-98a0-a1a3d2a6d1c8.png)
 # Installation
@@ -16,6 +20,7 @@ Liberate your storage space, and the eyes of onlookers, with this automated osu!
 3. Extract the archive to it's own folder, and move that folder to where you would like the program to be located.
 4. Create any shortcuts to the program you would like (i.e. in `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`).
 5. Run 'no!background.exe' to start the program
+
 
 ![HeaderModes](https://user-images.githubusercontent.com/16698604/75624881-b7612900-5bf3-11ea-8f3a-6080751e55df.png)
 # Modes
@@ -36,6 +41,7 @@ This mode deletes all background media files, whilst simultaneously comment out 
 ## Blur
 This mode blurs all supported background image files (*.png, *.jpg & *.bmp). Original files have .bkp appended to the end of the file so that the process can be undone by overriding the new files. It is recommended to delete all .bkp files to save space if you are happy with the results.
 
+
 ![HeaderUI](https://user-images.githubusercontent.com/16698604/75624880-b62ffc00-5bf3-11ea-814b-f32f03965525.png)
 # UI
 Once a mode has been selected by clicking on the relevant name, the user may choose to either process a [select](#select) amount of beatmaps, or [all](#auto) beatmaps found within a folder
@@ -47,6 +53,7 @@ Upon clicking on the 'SELECT' button, a file browsing dialog will open. The user
 ## Auto
 ![AutoButton](https://user-images.githubusercontent.com/16698604/75625433-e4fca100-5bf8-11ea-80fb-c6f84ed375a1.png)
 Upon clicking on the 'AUTO' button, a file browsing dialog will open. The user must then select the folder **CONTAINING** all the beatmap folders. The program will then iterate through **ALL** found beatmaps and apply the selected mode.
+
 
 ![License](https://user-images.githubusercontent.com/16698604/75624962-7b7a9380-5bf4-11ea-9395-6c818508d7eb.png)
 # License
