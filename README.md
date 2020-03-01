@@ -7,7 +7,7 @@ Liberate your storage space, and the eyes of onlookers, with this automated osu!
 
 
 ![HeaderRequired](https://user-images.githubusercontent.com/16698604/75624946-55ed8a00-5bf4-11ea-91a2-ddcdd45f2092.png)
-# Required
+# Requirements
 - [x] [.NET Framework 4.7.2 (Runtime)](https://dotnet.microsoft.com/download/dotnet-framework)
 - [x] Windows 10, 8.1, 8, 7 SP1, Vista / XP (Untested)
 - [ ] A life
@@ -48,10 +48,12 @@ Once a mode has been selected by clicking on the relevant name, the user may cho
 
 ## Select
 ![SelectButton](https://user-images.githubusercontent.com/16698604/75624884-bb8d4680-5bf3-11ea-9d48-ad93192acd03.png)
+
 Upon clicking on the 'SELECT' button, a file browsing dialog will open. The user may then choose the beatmap folders they would like to process. In windows, holding CTRL or SHIFT will allow the user to select multiple folders at once.
 
 ## Auto
 ![AutoButton](https://user-images.githubusercontent.com/16698604/75625433-e4fca100-5bf8-11ea-80fb-c6f84ed375a1.png)
+
 Upon clicking on the 'AUTO' button, a file browsing dialog will open. The user must then select the folder **CONTAINING** all the beatmap folders. The program will then iterate through **ALL** found beatmaps and apply the selected mode.
 
 
