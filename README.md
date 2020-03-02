@@ -1,10 +1,6 @@
 ![Banner](https://user-images.githubusercontent.com/16698604/75624773-613fb600-5bf2-11ea-91e1-678ef262bb6f.png)
 Liberate your storage space, and the eyes of onlookers, with this automated osu! background / video remover. Also doubles as a background blurrer - for when your underage anime grills are just a little too underage ;)
 
-***This program is peppy approved!***
-
-![PeppyScreenshot](https://user-images.githubusercontent.com/16698604/75625527-e8445c80-5bf9-11ea-9328-a03ce0cf49f4.png)![PeppyStampSmallRotate](https://user-images.githubusercontent.com/16698604/75625578-66086800-5bfa-11ea-9f3c-5109d993743e.png)
-
 
 ![HeaderRequired](https://user-images.githubusercontent.com/16698604/75624946-55ed8a00-5bf4-11ea-91a2-ddcdd45f2092.png)
 # Requirements
