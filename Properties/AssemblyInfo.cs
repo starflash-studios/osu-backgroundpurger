@@ -1,18 +1,28 @@
-﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
+﻿#region Copyright (C) 2017-2020  Starflash Studios
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License (Version 3.0)
+// as published by the Free Software Foundation.
+// 
+// More information can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html
+#endregion
+
+#region Using Directives
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+
+#endregion
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("no!background")]
-[assembly: AssemblyDescription("Liberate your storage space, and the eyes of onlookers, with this automated osu! background / video remover. Also doubles as a background blurrer - for when your underage anime grills are just a little too underage ;)")]
+[assembly: AssemblyTitle("Osu!BackgroundPurge")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Starflash Studios")]
-[assembly: AssemblyProduct("no!background")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Osu!BackgroundPurge")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,6 +61,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.1.2")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguage("en")]
+[assembly: AssemblyVersion("0.2.0.0")]
+[assembly: AssemblyFileVersion("0.2.0.0")]

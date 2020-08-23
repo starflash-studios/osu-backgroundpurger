@@ -1,0 +1,64 @@
+﻿<Page x:Class="Osu_BackgroundPurge.Pages.BackgroundResourcesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="460" d:DesignWidth="800"
+      Title="BackgroundResourcesPage">
+    <Grid>
+        <Button Opacity="0" /> <!-- Used to clear user focus -->
+        <UniformGrid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/LazerPink.png" Margin="1" />
+                <ToggleButton x:Name="TgLPi" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgLazerPink, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/LazerPurple.png" Margin="1" />
+                <ToggleButton x:Name="TgLPu" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgLazerPurple, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/OsuAcademy.png" Margin="1" />
+                <ToggleButton x:Name="TgOAc" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgOsuAcademy, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/OsuCinematic.png" Margin="1" />
+                <ToggleButton x:Name="TgOCm" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgOsuCinematic, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/OsuDark.png" Margin="1" />
+                <ToggleButton x:Name="TgODk" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgOsuDark, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/OsuMinimalist.png" Margin="1" />
+                <ToggleButton x:Name="TgOMm" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgOsuMinimalist, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/OsuParental.png" Margin="1" />
+                <ToggleButton x:Name="TgLPr" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgOsuParental, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Grid>
+                <Image Source="/Osu!BackgroundPurge;component/Resources/Backgrounds/OsuYukata.png" Margin="1" />
+                <ToggleButton x:Name="TgLYk" BorderThickness="0" Background="Transparent" FocusVisualStyle="{x:Null}"
+                              Click="Tg_Click"
+                              IsChecked="{Binding Path=BgOsuYukata, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}" />
+            </Grid>
+            <Label x:Name="LblCount" Content="[0] Selected" IsHitTestVisible="False"
+                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+        </UniformGrid>
+    </Grid>
+</Page>

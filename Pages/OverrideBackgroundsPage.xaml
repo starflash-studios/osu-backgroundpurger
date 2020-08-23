@@ -1,0 +1,104 @@
+﻿<Page x:Class="Osu_BackgroundPurge.Pages.OverrideBackgroundsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:userControls="clr-namespace:Osu_BackgroundPurge.UserControls"
+      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      Background="#303030"
+      mc:Ignorable="d"
+      d:DesignHeight="460" d:DesignWidth="610" MinHeight="460" MinWidth="610"
+      Title="RemoveBackgroundsPage">
+    <Grid>
+        <SelectiveScrollingGrid>
+            <SelectiveScrollingGrid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="330" />
+                <ColumnDefinition Width="276" />
+            </SelectiveScrollingGrid.ColumnDefinitions>
+            <DockPanel Grid.Column="0">
+                <TabControl VerticalAlignment="Stretch" DockPanel.Dock="Top">
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabPanel}">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </TabControl.Resources>
+                    <TabItem Header="Select Individual Sets">
+                        <DockPanel DockPanel.Dock="Top" Height="32" Margin="10">
+                            <Label Content="Select Beatmap Folder(s):　" VerticalContentAlignment="Center"
+                                   DockPanel.Dock="Left" />
+                            <userControls:FolderMultiBrowser x:Name="IndivFolderBrowser" Height="32" />
+                        </DockPanel>
+                    </TabItem>
+                    <TabItem Header="Auto">
+                        <DockPanel DockPanel.Dock="Top" Height="32" Margin="10">
+                            <Label Content="Select Songs Folder:　" VerticalContentAlignment="Center"
+                                   DockPanel.Dock="Left" />
+                            <userControls:FolderBrowser x:Name="AutoFolderBrowser" Height="32"
+                                                        DirectoryPathChanged="AutoFolderBrowser_DirectoryPathChanged" />
+                        </DockPanel>
+                    </TabItem>
+                </TabControl>
+                <userControls:AppendableListView x:Name="IndivListView" DockPanel.Dock="Bottom"
+                                                 VerticalAlignment="Stretch" />
+            </DockPanel>
+            <SelectiveScrollingGrid Grid.Column="1">
+                <SelectiveScrollingGrid.RowDefinitions>
+                    <RowDefinition Height="400" />
+                    <RowDefinition />
+                    <RowDefinition Height="60" />
+                </SelectiveScrollingGrid.RowDefinitions>
+                <GroupBox Header="General Settings" Grid.Row="0">
+                    <ScrollViewer MinHeight="280" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+                            <RadioButton x:Name="BackgroundMethodSpecificRadio" GroupName="BackgroundMethod"
+                                         Content="Specific Background" Checked="BackgroundMethod_Changed" />
+                            <RadioButton GroupName="BackgroundMethod" Content="Random Backgrounds" IsChecked="True"
+                                         Checked="BackgroundMethod_Changed" />
+                            <StackPanel x:Name="BackgroundMethodSpecificPanel" Orientation="Vertical"
+                                        Visibility="Collapsed">
+                                <DockPanel>
+                                    <Label Content="Background File:" DockPanel.Dock="Left" VerticalAlignment="Center"
+                                           Width="120" />
+                                    <userControls:FileOpenBrowser x:Name="BackgroundMethodSpecificBrowser" />
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel x:Name="BackgroundMethodRandomPanel" Orientation="Vertical" MinHeight="160">
+                                <DockPanel>
+                                    <Label Content="Backgrounds Folder:" VerticalAlignment="Center" Width="120" />
+                                    <userControls:FolderBrowser x:Name="BackgroundMethodRandomBrowser" />
+                                </DockPanel>
+                                <ToggleButton x:Name="BackgroundMethodToggle" Width="25" Height="15" Padding="0"
+                                              Margin="2" VerticalContentAlignment="Center"
+                                              HorizontalContentAlignment="Center" Click="BackgroundMethodToggle_Click"
+                                              IsChecked="True">
+                                    <ToggleButton.Content>
+                                        <iconPacks:PackIconModern x:Name="BackgroundMethodToggleIcon" Kind="ArrowDown" />
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+                                <!--<Label Content="OR" HorizontalAlignment="Center"/>-->
+                                <DockPanel x:Name="BackgroundMethodRandomResPanel">
+                                    <Frame x:Name="BackgroundMethodRandomResFrame" MinHeight="155"
+                                           Background="#19FFFFFF" />
+                                </DockPanel>
+                            </StackPanel>
+                            <Separator Margin="10" />
+                            <CheckBox x:Name="BackgroundKeepOld" Content="Keep old backgrounds" IsChecked="True" />
+                            <Separator Margin="10" />
+                            <CheckBox x:Name="BackgroundResize" Content="Resize backgrounds to match original"
+                                      IsChecked="True" Click="BackgroundResize_Click" />
+                            <Rectangle Height="5" />
+                            <Button x:Name="BtnResizeSettings" Content="Resize Settings" Width="150"
+                                    HorizontalAlignment="Left" IsEnabled="True" Click="BtnResizeSettings_Click" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </GroupBox>
+                <StackPanel Orientation="Vertical" Grid.Row="2">
+                    <ProgressBar x:Name="BWProgress" DockPanel.Dock="Top" Visibility="Hidden" Minimum="0" Maximum="100" />
+                    <Button x:Name="StartButton" Content="Start" Height="48" IsEnabled="False"
+                            Click="StartButton_Click" />
+                </StackPanel>
+            </SelectiveScrollingGrid>
+        </SelectiveScrollingGrid>
+
+    </Grid>
+</Page>

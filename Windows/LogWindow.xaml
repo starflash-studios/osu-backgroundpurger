@@ -1,0 +1,93 @@
+﻿<mah:MetroWindow x:Class="Osu_BackgroundPurge.Windows.LogWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                 Closed="MetroWindow_Closed"
+                 IsVisibleChanged="MetroWindow_IsVisibleChanged"
+                 mc:Ignorable="d"
+                 Background="#242424"
+                 FontFamily="JetBrains Mono"
+                 MinHeight="450" Height="450" MinWidth="800" Width="800"
+                 Title="Log Viewer">
+    <Grid Margin="10">
+        <SelectiveScrollingGrid>
+            <SelectiveScrollingGrid.RowDefinitions>
+                <RowDefinition Height="32" />
+                <RowDefinition />
+                <RowDefinition Height="32" />
+            </SelectiveScrollingGrid.RowDefinitions>
+            <ToolBarTray x:Name="ToolBar" Grid.Row="0">
+                <ToolBar Height="32">
+                    <ToggleButton x:Name="TglToolBarInfo" Width="48" IsChecked="True" Click="TglToolBarInfo_Click">
+                        <ToggleButton.Content>
+                            <iconPacks:PackIconModern Kind="InformationCircle" Height="24" VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center" />
+                        </ToggleButton.Content>
+                    </ToggleButton>
+                </ToolBar>
+                <ToolBar Height="32" Header="Global">
+                    <ToggleButton x:Name="TglCatchLogs" IsChecked="True" Click="TglCatchLogs_Click">
+                        <ToggleButton.Content>
+                            <DockPanel VerticalAlignment="Center" Height="24">
+                                <iconPacks:PackIconModern Kind="Lifesaver" VerticalAlignment="Center" Height="24"
+                                                          DockPanel.Dock="Left" />
+                                <Label x:Name="LblCatchLogs" Content="Catch debug logs" VerticalAlignment="Center"
+                                       Padding="5,0,5,0" />
+                            </DockPanel>
+                        </ToggleButton.Content>
+                    </ToggleButton>
+                    <Button x:Name="BtnClearAll" Height="32" Click="BtnClearAll_Click" IsEnabled="False">
+                        <Button.Content>
+                            <DockPanel>
+                                <iconPacks:PackIconModern Kind="Clear" DockPanel.Dock="Left" />
+                                <Label x:Name="LblClearAll" Content="Clear log" Height="32" VerticalAlignment="Center" />
+                            </DockPanel>
+                        </Button.Content>
+                    </Button>
+                </ToolBar>
+                <ToolBar Height="32" Header="File Management">
+                    <Button x:Name="BtnSave" Height="32" Click="BtnSave_Click" IsEnabled="False">
+                        <Button.Content>
+                            <DockPanel>
+                                <iconPacks:PackIconModern Kind="Save" DockPanel.Dock="Left" />
+                                <Label x:Name="LblSave" Content="Save .log file" Height="32" VerticalAlignment="Center" />
+                            </DockPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Height="32" x:Name="BtnOpen" Click="BtnOpen_Click" IsEnabled="False">
+                        <Button.Content>
+                            <DockPanel>
+                                <iconPacks:PackIconModern Kind="PageText" DockPanel.Dock="Left" />
+                                <Label x:Name="LblOpen" Content="Open .log file" Height="32" VerticalAlignment="Center" />
+                            </DockPanel>
+                        </Button.Content>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
+            <ScrollViewer x:Name="TextBlockScroller" Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+                <TextBlock x:Name="TextBlock" />
+            </ScrollViewer>
+            <StatusBar x:Name="Recent" Grid.Row="2" FontFamily="JetBrains Mono" Background="#242424">
+                <StatusBarItem>
+                    <StackPanel Orientation="Horizontal" Height="16">
+                        <StackPanel Orientation="Horizontal" Height="16">
+                            <iconPacks:PackIconModern Kind="Clock" Height="12" Width="12" Margin="0,0,5,0"
+                                                      VerticalAlignment="Center" />
+                            <Label x:Name="RecentTime" Content="1:45:30 PM" Height="16" Padding="0" />
+                        </StackPanel>
+                        <Label Content="：" Height="16" Padding="0" />
+                        <!-- ReSharper disable MarkupAttributeTypo -->
+                        <TextBlock x:Name="RecentMsg" Background="Black" Foreground="Green" Height="16"
+                                   TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch"
+                                   Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt..." />
+                        <!-- ReSharper restore MarkupAttributeTypo -->
+                    </StackPanel>
+                </StatusBarItem>
+            </StatusBar>
+        </SelectiveScrollingGrid>
+    </Grid>
+</mah:MetroWindow>

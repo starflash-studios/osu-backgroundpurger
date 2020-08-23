@@ -17,6 +17,10 @@ Liberate your storage space, and the eyes of onlookers, with this automated osu!
 4. Create any shortcuts to the program you would like (i.e. in `C:\ProgramData\Microsoft\Windows\Start Menu\Programs`).
 5. Run 'no!background.exe' to start the program
 
+# IMPORTANT
+Please note: The below is an outdated readme.md file from versions 0.1.1.0 and below. Though the functionality remains almost the same, all below information is outdated and not relevant to the latest version. An updated readme.md file will be released soon.
+
+*With that out of the way, let's begin.*
 
 ![HeaderModes](https://user-images.githubusercontent.com/16698604/75624881-b7612900-5bf3-11ea-8f3a-6080751e55df.png)
 # Modes
