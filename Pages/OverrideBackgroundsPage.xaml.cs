@@ -9,6 +9,7 @@
 #region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -16,16 +17,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-
 using MahApps.Metro.IconPacks;
-
 using Osu_BackgroundPurge.UserControls;
 using Osu_BackgroundPurge.Windows;
-
 using OsuParser;
 using OsuParser.Events;
 

@@ -14,6 +14,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 using Osu_BackgroundPurge.Pages;
 
@@ -68,7 +69,7 @@ namespace Osu_BackgroundPurge.Windows {
             ////Test();
         }
 
-        static void Current_DispatcherUnhandledException(object Sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs E) => ExceptionWindow.Catch(E.Exception);
+        static void Current_DispatcherUnhandledException(object Sender, DispatcherUnhandledExceptionEventArgs E) => ExceptionWindow.Catch(E.Exception);
 
         // ReSharper disable once FunctionRecursiveOnAllPaths
         //public void Test() {

@@ -175,7 +175,6 @@ namespace Osu_BackgroundPurge {
 
                 if (!Destination.Exists) {
                     File.CopyTo(Destination, Overwrite);
-                    return;
                 }
             }
 
@@ -206,7 +205,6 @@ namespace Osu_BackgroundPurge {
 
                 if (!Exists) {
                     File.CopyTo(Destination);
-                    return;
                 }
             }
 
