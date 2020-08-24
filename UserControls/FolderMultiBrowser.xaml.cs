@@ -10,22 +10,29 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Input;
+
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 #endregion
 
 namespace Osu_BackgroundPurge.UserControls {
+    /// <summary>A <see cref="System.Windows.Controls.UserControl"/> allowing the user to select multiple <see cref="DirectoryInfo"/>s.</summary>
+    /// <seealso cref="System.Windows.Controls.UserControl" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class FolderMultiBrowser {
 
+        /// <summary>Initialises a new instance of the <see cref="FolderMultiBrowser"/> class.</summary>
         public FolderMultiBrowser() {
             InitializeComponent();
         }
 
+        /// <summary>Handles the <c>Click</c> event of the <c>BrowseButton</c> control.
+        /// <para/>Creates and opens a <see cref="CommonOpenFileDialog"/>, allowing the user to browse and select multiple folders.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BrowseButton_Click(object Sender, RoutedEventArgs E) {
             //string Init = StringToFileSystemInfoTypeConverter.ExecutingLocation().FullName;
             string Init = StringToFileSystemInfoTypeConverter.Desktop().FullName;
@@ -67,9 +74,11 @@ namespace Osu_BackgroundPurge.UserControls {
 
         #region Routed Events
 
+        /// <summary>The directory path changed event</summary>
         public static readonly RoutedEvent DirectoryPathChangedEvent = EventManager.RegisterRoutedEvent(
        nameof(DirectoryPathChanged), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FolderMultiBrowser));
 
+        /// <summary>Occurs when the selected directory paths change.</summary>
         public event RoutedEventHandler DirectoryPathChanged {
             add => AddHandler(DirectoryPathChangedEvent, value);
             remove => RemoveHandler(DirectoryPathChangedEvent, value);
@@ -81,11 +90,14 @@ namespace Osu_BackgroundPurge.UserControls {
 
         #region Selected Path
 
+        /// <summary>Gets or sets the selected paths.</summary>
+        /// <value>The selected paths of type <see cref="DirectoryInfo"/>.</value>
         public ReadOnlyCollection<DirectoryInfo> SelectedPaths {
             get => (ReadOnlyCollection<DirectoryInfo>)GetValue(SelectedPathsProperty);
             set => SetValue(SelectedPathsProperty, value);
         }
 
+        /// <summary>A <see cref="DependencyProperty"/> responsible for handling event/bindings for <see cref="SelectedPaths"/>.</summary>
         public static readonly DependencyProperty SelectedPathsProperty =
             DependencyProperty.Register(
                 nameof(SelectedPaths),
@@ -96,6 +108,9 @@ namespace Osu_BackgroundPurge.UserControls {
                     DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                 });
 
+        /// <summary>Called when <see cref="SelectedPathsProperty"/> changes.</summary>
+        /// <param name="D">The <see cref="DependencyObject"/>.</param>
+        /// <param name="E">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         static void SelectedPathsChanged(DependencyObject D, DependencyPropertyChangedEventArgs E) {
             FolderMultiBrowser U = (FolderMultiBrowser)D;
             ReadOnlyCollection<DirectoryInfo> I = (ReadOnlyCollection<DirectoryInfo>)E.NewValue;
@@ -106,28 +121,38 @@ namespace Osu_BackgroundPurge.UserControls {
             U.RaiseEvent(new RoutedEventArgs(DirectoryPathChangedEvent, I));
         }
 
-        public static string GetSummary<T>(ReadOnlyCollection<T> Paths) => Paths != null ? $"\"{string.Join("\", \"", Paths)}\"" : string.Empty;
+        /// <summary>Gets a string-based summary of the specified <see cref="ReadOnlyCollection{T}"/>.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Elements">The elements.</param>
+        /// <returns><see cref="string"/></returns>
+        public static string GetSummary<T>(ReadOnlyCollection<T> Elements) => Elements != null ? $"\"{string.Join("\", \"", Elements)}\"" : string.Empty;
 
         #endregion
 
         #region Filter
 
+        /// <summary>Gets or sets the filter.</summary>
+        /// <value>The filter <see cref="string"/>.</value>
         public string Filter {
             get => (string)GetValue(FilterProperty);
             set => SetValue(FilterProperty, value);
         }
 
+        /// <summary>A <see cref="DependencyProperty"/> responsible for handling event/bindings for <see cref="Filter"/>.</summary>
         public static readonly DependencyProperty FilterProperty = DependencyProperty.Register(nameof(Filter), typeof(string), typeof(FolderMultiBrowser), new PropertyMetadata("Any File (*.*)|*.*"));
 
         #endregion
 
         #region Filter Index
 
+        /// <summary>Gets or sets the index of the initially-selected filter.</summary>
+        /// <value>The index of the filter.</value>
         public int FilterIndex {
             get => (int)GetValue(FilterIndexProperty);
             set => SetValue(FilterIndexProperty, value);
         }
 
+        /// <summary>A <see cref="DependencyProperty"/> responsible for handling event/bindings for <see cref="FilterIndex"/>.</summary>
         public static readonly DependencyProperty FilterIndexProperty =
             DependencyProperty.Register(nameof(FilterIndex), typeof(int), typeof(FolderMultiBrowser), new PropertyMetadata(0));
 
@@ -135,11 +160,14 @@ namespace Osu_BackgroundPurge.UserControls {
 
         #region Initial Directory
 
+        /// <summary>Gets or sets the initial directory.</summary>
+        /// <value>The initial directory <see cref="DirectoryInfo"/>.</value>
         public DirectoryInfo InitialDirectory {
             get => (DirectoryInfo)GetValue(InitialDirectoryProperty);
             set => SetValue(InitialDirectoryProperty, value);
         }
 
+        /// <summary>A <see cref="DependencyProperty"/> responsible for handling event/bindings for <see cref="InitialDirectory"/>.</summary>
         public static readonly DependencyProperty InitialDirectoryProperty =
             DependencyProperty.Register(nameof(InitialDirectory), typeof(DirectoryInfo), typeof(FolderMultiBrowser), new PropertyMetadata(StringToFileSystemInfoTypeConverter.ExecutingLocation()));
 
@@ -147,23 +175,20 @@ namespace Osu_BackgroundPurge.UserControls {
 
         #region Title
 
+        /// <summary>Gets or sets the popup title.</summary>
+        /// <value>The popup title <see cref="string"/>.</value>
         public string PopupTitle {
             get => (string)GetValue(PopupTitleProperty);
             set => SetValue(PopupTitleProperty, value);
         }
 
+        /// <summary>A <see cref="DependencyProperty"/> responsible for handling event/bindings for <see cref="PopupTitle"/>.</summary>
         public static readonly DependencyProperty PopupTitleProperty =
             DependencyProperty.Register(nameof(PopupTitle), typeof(string), typeof(FolderMultiBrowser), new PropertyMetadata("Pick a file"));
 
         #endregion
 
         #endregion
-
-        void PathTextBox_LostKeyboardFocus(object Sender, KeyboardFocusChangedEventArgs E) {
-            if (PathTextBox.Text.TryGetDirectoryInfo(true, out DirectoryInfo Result)) {
-                SelectedPaths = new ReadOnlyCollection<DirectoryInfo>(new [] {Result});
-            }
-        }
 
     }
 

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 #endregion
 
 namespace Osu_BackgroundPurge {
+    /// <summary>A collection of numerous extensions for enumerable-based variables.</summary>
     public static class EnumerableExtensions {
 
         /// <summary>Converts to enum.</summary>
@@ -22,18 +23,18 @@ namespace Osu_BackgroundPurge {
         /// <param name="Value">The value.</param>
         /// <param name="Default">The default.</param>
         /// <param name="IgnoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <returns><see cref="T"/></returns>
+        /// <returns><typeparamref name="T"/></returns>
         public static T ConvertToEnum<T>(this string Value, T Default = default, bool IgnoreCase = true) where T : struct => Enum.TryParse(Value, IgnoreCase, out T Result) ? Result : Default;
 
         /// <summary>Converts to enum.</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="Value">The value.</param>
         /// <param name="Default">The default.</param>
-        /// <returns><see cref="T"/></returns>
+        /// <returns><typeparamref name="T"/></returns>
         public static T ConvertToEnum<T>(this int Value, T Default = default) where T : struct => Value.ToString().ConvertToEnum(Default, true);
 
         /// <summary> Tries to add the given <paramref name="Value"/>, returning true if successful. </summary>
-        /// <returns><see cref="System.Boolean"/></returns>
+        /// <returns><see cref="bool"/></returns>
         public static bool TryAdd<T>(this HashSet<T> HashSet, T Value) {
             if (!HashSet.Contains(Value)) {
                 HashSet.Add(Value);
@@ -47,21 +48,21 @@ namespace Osu_BackgroundPurge {
         /// <typeparam name="T"></typeparam>
         /// <param name="Array">The array.</param>
         /// <param name="R">The randomiser to use. If set to <c>null</c> [new Random()].</param>
-        /// <returns><see cref="T"/></returns>
+        /// <returns><typeparamref name="T"/></returns>
         public static T GetRandom<T>(this T[] Array, Random R = null) => Array[(R ?? new Random()).Next(0, Array.Length)];
 
         /// <summary>Gets a random element from the given <paramref name="Enum"/>.</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="Enum">The array.</param>
         /// <param name="R">The randomiser to use.</param>
-        /// <returns><see cref="T"/></returns>
+        /// <returns><typeparamref name="T"/></returns>
         public static T GetRandom<T>(this IEnumerable<T> Enum, Random R = null) => Enum.ToArray().GetRandom(R);
 
         /// <summary>Gets a random element from the given <paramref name="List"/>.</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="List">The array.</param>
         /// <param name="R">The randomiser to use.</param>
-        /// <returns><see cref="T"/></returns>
+        /// <returns><typeparamref name="T"/></returns>
         public static T GetRandom<T>(this List<T> List, Random R = null) => List[(R ?? new Random()).Next(0, List.Count)];
 
         /// <summary>Returns the count of values in the given enum type.</summary>
@@ -79,7 +80,7 @@ namespace Osu_BackgroundPurge {
         /// <summary>Returns the summary of active flags.</summary>
         /// <param name="Value">The flagged enum.</param>
         /// <param name="Delimiter">The delimiter to separate flags.</param>
-        /// <returns><see cref="System.String"/></returns>
+        /// <returns><see cref="string"/></returns>
         public static string GetFlagsSummary(this Enum Value, string Delimiter = ", ") => string.Join(Delimiter, Value.GetFlags());
 
         /// <summary>Returns the active flags.</summary>

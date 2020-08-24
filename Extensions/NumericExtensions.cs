@@ -13,6 +13,7 @@ using System;
 #endregion
 
 namespace Osu_BackgroundPurge {
+    /// <summary>A collection of numerous extensions for numeral-based variables.</summary>
     public static class NumericExtensions {
 
         #region Double / Long

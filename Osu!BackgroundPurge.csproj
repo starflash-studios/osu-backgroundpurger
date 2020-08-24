@@ -28,13 +28,15 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>8</LangVersion>
+    <DocumentationFile>bin\Release\Osu!BackgroundPurge.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
@@ -99,10 +101,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\FileSaveBrowser.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\ExceptionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -134,7 +132,6 @@
     <Compile Include="Windows\UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\BottomDockingPanel.cs" />
     <Compile Include="UserControls\EnumDropdown.xaml.cs">
       <DependentUpon>EnumDropdown.xaml</DependentUpon>
     </Compile>
@@ -156,9 +153,6 @@
     </Compile>
     <Compile Include="UserControls\FileOpenBrowser.xaml.cs">
       <DependentUpon>FileOpenBrowser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\FileSaveBrowser.xaml.cs">
-      <DependentUpon>FileSaveBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>

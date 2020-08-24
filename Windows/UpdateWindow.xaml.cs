@@ -41,6 +41,7 @@ namespace Osu_BackgroundPurge.Windows {
         /// <summary>The parent window.</summary>
         public Window ParentWindow;
 
+        /// <summary>Initialises a new instance of the <see cref="UpdateWindow"/> class.</summary>
         public UpdateWindow() {
             InitializeComponent();
             Instance = this;
@@ -151,9 +152,12 @@ namespace Osu_BackgroundPurge.Windows {
 
         #endregion
 
-        #region UI
+        #region UI        
+        /// <summary>The templated 'title' string containing variables to replace.</summary>
         public string TemplateTitle;
+        /// <summary>The templated 'current version' string containing variables to replace.</summary>
         public string TemplateCurVerText;
+        /// <summary>The templated 'new version' string containing variables to replace.</summary>
         public string TemplateNewVerText;
 
         /// <summary>Initialises the UI.</summary>

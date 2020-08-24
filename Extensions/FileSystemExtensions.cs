@@ -20,6 +20,7 @@ using Ookii.Dialogs.Wpf;
 #endregion
 
 namespace Osu_BackgroundPurge {
+    /// <summary> A collection of numerous extensions for filesystem-based variables. </summary>
     public static class FileSystemExtensions {
 
         #region FileSystemInfo Constructors
@@ -59,7 +60,7 @@ namespace Osu_BackgroundPurge {
         /// <param name="DirectoryPath">The directory path.</param>
         /// <param name="CheckExists">if set to <c>true</c> [check exists].</param>
         /// <param name="Result">The result.</param>
-        /// <returns><see cref="System.Boolean"/></returns>
+        /// <returns><see cref="bool"/></returns>
         public static bool TryGetDirectoryInfo(this string DirectoryPath, bool CheckExists, out DirectoryInfo Result) {
             if (!CheckExists || Directory.Exists(DirectoryPath)) {
                 try {
@@ -280,7 +281,7 @@ namespace Osu_BackgroundPurge {
 
         /// <summary>Returns the <paramref name="File"/>'s name without its extension.</summary>
         /// <param name="File">The file.</param>
-        /// <returns><see cref="System.String"/></returns>
+        /// <returns><see cref="string"/></returns>
         public static string NameWithoutExtension(this FileInfo File) => Path.GetFileNameWithoutExtension(File.Name);
 
         /// <summary>Returns the string as a file name with all invalid windows characters removed.</summary>
@@ -349,12 +350,12 @@ namespace Osu_BackgroundPurge {
 
         /// <summary>Returns all lines of text within the given <paramref name="FileInfo"/>.</summary>
         /// <param name="FileInfo">The file to read.</param>
-        /// <returns><see cref="Array.string"/></returns>
+        /// <returns><see cref="T:string[]"/></returns>
         public static string[] ReadAllLines(this FileInfo FileInfo) => File.ReadAllLines(FileInfo.FullName);
 
         /// <summary>Returns all bytes within the given <paramref name="FileInfo"/>.</summary>
         /// <param name="FileInfo">The file to read.</param>
-        /// <returns><see cref="Array.byte"/></returns>
+        /// <returns><see cref="T:byte[]"/></returns>
         public static byte[] ReadAllBytes(this FileInfo FileInfo) => File.ReadAllBytes(FileInfo.FullName);
 
         /// <summary><inheritdoc cref="File.WriteAllText(string, string)"/></summary>

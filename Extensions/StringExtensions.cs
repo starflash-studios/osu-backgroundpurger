@@ -13,6 +13,7 @@ using System;
 #endregion
 
 namespace Osu_BackgroundPurge {
+    /// <summary>A collection of numerous extensions for string-based variables.</summary>
     public static class StringExtensions {
         /// <summary><inheritdoc cref="string.IsNullOrEmpty(string)"/></summary>
         /// <param name="String"><inheritdoc cref="string.IsNullOrEmpty(string)" path="value"/></param>

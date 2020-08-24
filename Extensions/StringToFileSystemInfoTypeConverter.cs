@@ -17,6 +17,8 @@ using System.Reflection;
 #endregion
 
 namespace Osu_BackgroundPurge {
+    /// <summary>A <see cref="System.ComponentModel.TypeConverter"/> for converting <see cref="string"/> to <see cref="FileSystemInfo"/>, and vice versa.</summary>
+    /// <seealso cref="System.ComponentModel.TypeConverter" />
     public class StringToFileSystemInfoTypeConverter : TypeConverter {
         /// <summary>Determines whether this instance [can convert from] the specified context.</summary>
         /// <param name="Context">The context.</param>

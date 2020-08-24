@@ -29,11 +29,14 @@ using OsuParser.Events;
 #endregion
 
 namespace Osu_BackgroundPurge.Pages {
-
+    /// <summary>A <see cref="System.Windows.Controls.Page"/> responsible for allowing the user to specify which beatmaps they would like to override the backgrounds of; being able to manage them too.</summary>
+    /// <seealso cref="System.Windows.Controls.Page" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class OverrideBackgroundsPage {
+        /// <summary>The current <see cref="BackgroundResourcesPage"/> instance.</summary>
         public static BackgroundResourcesPage BRP;
-        public static DirectoryInfo Temp;
 
+        /// <summary>Initialises a new instance of the <see cref="OverrideBackgroundsPage"/> class.</summary>
         public OverrideBackgroundsPage() {
             InitializeComponent();
             IndivFolderBrowser.DirectoryPathChanged += IndivFolderBrowser_DirectoryPathChanged;
@@ -42,6 +45,10 @@ namespace Osu_BackgroundPurge.Pages {
             BackgroundMethodRandomResFrame.Navigate(BRP);
         }
 
+        /// <summary>Handles the <c>DirectoryPathChanged</c> event of the <see cref="IndivFolderBrowser"/> control.
+        /// <para/>Calls <see cref="IndivListView"/>.<see cref="AppendableListView.Set(List{object})"/>, showing the newly-selected folders.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void IndivFolderBrowser_DirectoryPathChanged(object Sender, RoutedEventArgs E) {
             ReadOnlyCollection<DirectoryInfo> Folders = ((FolderMultiBrowser)Sender).SelectedPaths;
             if (Folders != null) {
@@ -51,12 +58,16 @@ namespace Osu_BackgroundPurge.Pages {
                 //F.Sort();
 
                 //IndivListView.Clear();
-                IndivListView.SetList(F);
+                IndivListView.Set(F);
                 //IndivListView.Items.Clear();
                 StartButton.IsEnabled = F.Count > 0;
             }
         }
 
+        /// <summary>Handles the <c>DirectoryPathChanged</c> event of the <see cref="AutoFolderBrowser"/> control.
+        /// <para/>Searches through the newly-selected path for all available .osu beatmap files, calling <see cref="IndivListView"/>.<see cref="AppendableListView.Set(List{object})"/> with the relevant parent folders.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void AutoFolderBrowser_DirectoryPathChanged(object Sender, RoutedEventArgs E) {
             DirectoryInfo Folder = ((FolderBrowser)Sender).SelectedPath;
             if (Folder != null) {
@@ -75,11 +86,15 @@ namespace Osu_BackgroundPurge.Pages {
                 }
 
                 //F.Sort();
-                IndivListView.SetList(F);
+                IndivListView.Set(F);
                 StartButton.IsEnabled = F.Count > 0;
             }
         }
 
+        /// <summary>Handles the <c>Changed</c> event of the <see cref="BackgroundMethodSpecificRadio"/> control.
+        /// <para/>Updates the <see cref="Visibility"/> of the relevant <see cref="BackgroundMethodSpecificPanel"/> and <see cref="BackgroundMethodRandomPanel"/> controls.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BackgroundMethod_Changed(object Sender, RoutedEventArgs E) {
             bool Specific = BackgroundMethodSpecificRadio.IsChecked ?? false;
 
@@ -87,6 +102,13 @@ namespace Osu_BackgroundPurge.Pages {
             BackgroundMethodRandomPanel.SetVisibility(Specific ? Visibility.Collapsed : Visibility.Visible);
         }
 
+        /// <summary>Manages the given <see cref="Beatmap"/>, overriding all relevant <see cref="Background"/> event files.</summary>
+        /// <param name="Beatmap">The beatmap.</param>
+        /// <param name="Location">The location.</param>
+        /// <param name="Backgrounds">The backgrounds.</param>
+        /// <param name="ManagedMedia">The managed media.</param>
+        /// <param name="Resize">If set to <c>true</c> resizes the new backgrounds to match the original resolution, using the <see cref="WPFExtensions.ResizeToFill(Bitmap, int, int, PixelFormat, System.Drawing.Drawing2D.CompositingMode, System.Drawing.Drawing2D.CompositingQuality, System.Drawing.Drawing2D.InterpolationMode, System.Drawing.Drawing2D.SmoothingMode, System.Drawing.Drawing2D.PixelOffsetMode, System.Drawing.Drawing2D.WrapMode)"/> method.</param>
+        /// <param name="BackupBackground">If set to <c>true</c>, calls <see cref="FileSystemExtensions.SetAsBackup(FileInfo, bool)"/> on the original background files before overwriting them.</param>
         public static void ManageBeatmap(Beatmap Beatmap, DirectoryInfo Location, Bitmap[] Backgrounds, ref HashSet<string> ManagedMedia, bool Resize, bool BackupBackground) {
 
             foreach (OsuEvent Event in Beatmap.Events) {
@@ -145,6 +167,10 @@ namespace Osu_BackgroundPurge.Pages {
             }
         }
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="StartButton"/> control.
+        /// <para/>Prepares the managing <see cref="BackgroundWorker"/> and related UI, asynchronously starting it once ready.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void StartButton_Click(object Sender, RoutedEventArgs E) {
             StartButton.IsEnabled = false;
 
@@ -171,10 +197,19 @@ namespace Osu_BackgroundPurge.Pages {
             BW.RunWorkerAsync((Specific, Resize, Backup, UseResources, SingleBackgroundPath, BackgroundsFolderPath));
         }
 
+        /// <summary>Handles the <c>ProgressChanged</c> event of the managing <see cref="BackgroundWorker"/>.
+        /// <para/>Updates <see cref="BWProgress"/>.<see cref="RangeBase.Value"/> to the current <see cref="ProgressChangedEventArgs.ProgressPercentage"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
         void BW_ProgressChanged(object Sender, ProgressChangedEventArgs E) => Dispatcher.Invoke(() => {
             BWProgress.Value = E.ProgressPercentage;
         }, DispatcherPriority.Normal);
 
+        /// <summary>Handles the <c>RunWorkerCompleted</c> event of the managing <see cref="BackgroundWorker"/>.
+        /// <para/>Displays a <see cref="MessageBox"/>, summarising the processed beatmaps.
+        /// <para/>Resets all relevant UI controls, allowing more beatmaps to be processed afterwards.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
         void BW_RunWorkerCompleted(object Sender, RunWorkerCompletedEventArgs E) {
             Dispatcher.Invoke(() => {
                 BWProgress.Visibility = Visibility.Hidden;
@@ -189,6 +224,10 @@ namespace Osu_BackgroundPurge.Pages {
             }
         }
 
+        /// <summary>Does the work in the managing <see cref="BackgroundWorker"/>.
+        /// <para/>Iterates through each selected <see cref="Beatmap"/> and manages them, using <see cref="ManageBeatmap(Beatmap, DirectoryInfo, Bitmap[], ref HashSet{string}, bool, bool)"/> and returning the current progress between maps.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="DoWorkEventArgs"/> instance containing the event data.</param>
         void BW_DoWork(object Sender, DoWorkEventArgs E) {
             BackgroundWorker Worker = (BackgroundWorker)Sender;
 
@@ -266,65 +305,73 @@ namespace Osu_BackgroundPurge.Pages {
             E.Result = new WorkerResults(FinishedSets, FinishedMaps);
         }
 
-        #region WorkerResults Struct
+        #region WorkerResults Struct        
 
+        /// <summary>Results struct utilised for returning the final results of the managing <see cref="BackgroundWorker"/>.</summary>
         [SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Type is only relevant to this specific class")]
         public readonly struct WorkerResults : IEquatable<WorkerResults> {
+            /// <summary>The amount of processed sets.</summary>
             public readonly int Sets;
+            /// <summary>The amount of processed maps.</summary>
             public readonly long Maps;
 
+            /// <summary>Initialises a new instance of the <see cref="WorkerResults"/> struct.</summary>
+            /// <param name="Sets">The sets.</param>
+            /// <param name="Maps">The maps.</param>
             public WorkerResults(int Sets = -1, long Maps = -1) {
                 this.Sets = Sets;
                 this.Maps = Maps;
             }
 
+            /// <summary>Determines whether the specified <see cref="object" />, is equal to this instance.</summary>
+            /// <param name="Obj">The <see cref="object" /> to compare with this instance.</param>
+            /// <returns><c>True</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
             public override bool Equals(object Obj) => Obj is WorkerResults Results && Equals(Results);
 
+            /// <summary>Returns a hash code for this instance.</summary>
+            /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. </returns>
             public override int GetHashCode() {
                 unchecked { return(Sets * 397) ^ Maps.GetHashCode(); }
             }
 
+            /// <summary>Determines whether the specified <see cref="WorkerResults" />, is equal to this instance.</summary>
+            /// <param name="Other">The <see cref="WorkerResults" /> to compare with this instance.</param>
+            /// <returns><c>True</c> if the specified <see cref="WorkerResults" /> is equal to this instance; otherwise, <c>false</c>.</returns>
             public bool Equals(WorkerResults Other) =>
                 Sets == Other.Sets &&
                 Maps == Other.Maps;
 
+            /// <summary>Implements the operator ==.</summary>
+            /// <param name="Left">The left.</param>
+            /// <param name="Right">The right.</param>
+            /// <returns>The result of the operator.</returns>
             public static bool operator ==(WorkerResults Left, WorkerResults Right) => Left.Equals(Right);
 
+            /// <summary>Implements the operator !=.</summary>
+            /// <param name="Left">The left.</param>
+            /// <param name="Right">The right.</param>
+            /// <returns>The result of the operator.</returns>
             public static bool operator !=(WorkerResults Left, WorkerResults Right) => !(Left == Right);
 
+            /// <summary>Converts to string.</summary>
+            /// <returns>A <see cref="string" /> that represents this instance.</returns>
             public override string ToString() => $"{Sets} Sets ({Maps} Maps).";
         }
 
         #endregion
 
-        Dictionary<string, FileInfo> _GeneratedBitmaps;
-        public FileInfo GetReferenceBackground(Bitmap BMP, FileInfo Destination) {
-            if (Temp == null || !Temp.Exists) {
-                Temp = new DirectoryInfo($"{Path.GetTempPath().TrimEnd("\\")}\\{Path.GetRandomFileName().TrimEnd(".tmp")}\\");
-                Temp.Create();
-            }
-
-            if (_GeneratedBitmaps == null) { _GeneratedBitmaps = new Dictionary<string, FileInfo>(); }
-
-            ImageFormat F = GetFormat(Destination, out string E);
-
-            if (F != null) {
-                if (_GeneratedBitmaps.ContainsKey(E)) {
-                    return _GeneratedBitmaps[E];
-                }
-
-                FileInfo Tmp = new FileInfo(Path.Combine(Temp.FullName, $"{Path.GetTempFileName()}.{E}"));
-                BMP.Save(Tmp.FullName, F);
-                _GeneratedBitmaps.Add(E, Tmp);
-            }
-
-            return _GeneratedBitmaps.FirstOrDefault().Value;
-        }
-
+        /// <summary>Saves the specified BMP.</summary>
+        /// <param name="BMP">The BMP.</param>
+        /// <param name="Destination">The destination.</param>
+        /// <param name="Format">The format.</param>
         public static void Save(Bitmap BMP, FileInfo Destination, ImageFormat Format) => BMP.Save(Destination.FullName, Format);
 
-        public static void Save(Bitmap BMP, FileInfo Destination) => Save(BMP, Destination, GetFormat(Destination, out _));
+        //public static void Save(Bitmap BMP, FileInfo Destination) => Save(BMP, Destination, GetFormat(Destination, out _));
 
+        /// <summary>Gets the <see cref="ImageFormat"/> of the specified <paramref name="File"/>, if applicable.</summary>
+        /// <param name="File">The file.</param>
+        /// <param name="ParsedFormat">The parsed format.</param>
+        /// <returns><see cref="ImageFormat"/></returns>
         public static ImageFormat GetFormat(FileInfo File, out string ParsedFormat) {
             string E = File.Extension.TrimStart('.').ToLowerInvariant();
             switch (E) {
@@ -348,10 +395,22 @@ namespace Osu_BackgroundPurge.Pages {
             }
         }
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="BackgroundResize"/> control.
+        /// <para/>Enables/Disables the <see cref="BtnResizeSettings"/> control, relative to whether or not <see cref="BackgroundResize"/>.<see cref="ToggleButton.IsChecked"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BackgroundResize_Click(object Sender, RoutedEventArgs E) => BtnResizeSettings.IsEnabled = BackgroundResize.IsChecked ?? false;
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="BtnResizeSettings"/> control.
+        /// <para/>Creates and shows a new instance of <see cref="GlobalImageResizerWindow"/>, allowing the user to modify the resizer parameters.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BtnResizeSettings_Click(object Sender, RoutedEventArgs E) => new GlobalImageResizerWindow().Show();
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="BackgroundMethodToggle"/> control.
+        /// <para/>Updates the display icon of the button to match the <see cref="BackgroundMethodToggle"/>.<see cref="ToggleButton.IsChecked"/> status.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BackgroundMethodToggle_Click(object Sender, RoutedEventArgs E) {
             bool UseResources = ((ToggleButton)Sender).IsChecked ?? false;
 

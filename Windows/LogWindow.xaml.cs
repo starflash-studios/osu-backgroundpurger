@@ -20,19 +20,38 @@ using System.Windows.Threading;
 #endregion
 
 namespace Osu_BackgroundPurge.Windows {
+    /// <summary>A <see cref="Window"/> handling debug-logging for this application.</summary>
+    /// <seealso cref="Window" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class LogWindow {
+        /// <summary>Initialises a new instance of the <see cref="LogWindow"/> class.</summary>
         public LogWindow() {
             InitializeComponent();
             LogEvent += LogWindow_OnLog;
         }
 
+
+        /// <summary>Called when a new debug message is logged.</summary>
+        /// <param name="Message">The message.</param>
+        /// <param name="Category">The category.</param>
+        /// <param name="SendTime">The send time.</param>
         public delegate void OnLogDelegate(string Message, string Category = "INFO", DateTime SendTime = default);
+
+        /// <summary>Occurs when a new debug message is logged.</summary>
         public static event OnLogDelegate LogEvent;
 
+        /// <summary>Gets a value indicating whether or not to catch debug statements in the window.
+        /// <para/>This WILL slow down the application, and is only intended for debugging purposes.</summary>
+        /// <value><c>True</c> if catch debug statements; otherwise, <c>false</c>.</value>
         public static bool CatchLogs { get; private set; } = true;
 
+        /// <summary>Whether or not to display the full ToolBar button names.</summary>
         public bool DisplayToolBarInfo = true;
 
+        /// <summary>If <see cref="CatchLogs"/> is <c>True</c>, method logs all new messages into the <see cref="TextBlock"/>.</summary>
+        /// <param name="Message">The message.</param>
+        /// <param name="Category">The category.</param>
+        /// <param name="SendTime">The send time.</param>
         void LogWindow_OnLog(string Message, string Category, DateTime SendTime) {
             Dispatcher.Invoke(() => {
                 Recent.IsEnabled = true;
@@ -49,12 +68,20 @@ namespace Osu_BackgroundPurge.Windows {
             }, DispatcherPriority.Background);
         }
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="TglCatchLogs"/> control.
+        /// <para/>Updates the related <see cref="CatchLogs"/> variable.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void TglCatchLogs_Click(object Sender, RoutedEventArgs E) {
             if (Sender is ToggleButton TB) {
                 CatchLogs = TB.IsChecked ?? false;
             }
         }
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="TglToolBarInfo"/> control.
+        /// <para/>Updates the <see cref="Visibility"/> of related ToolBar labels.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void TglToolBarInfo_Click(object Sender, RoutedEventArgs E) {
             if (Sender is ToggleButton TB) {
                 DisplayToolBarInfo = TB.IsChecked ?? false;
@@ -66,6 +93,10 @@ namespace Osu_BackgroundPurge.Windows {
             }
         }
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="BtnClearAll"/> control.
+        /// <para/>Clears the currently-displayed messages in <see cref="TextBlock"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BtnClearAll_Click(object Sender, RoutedEventArgs E) {
             TextBlock.Text = string.Empty;
 
@@ -73,7 +104,13 @@ namespace Osu_BackgroundPurge.Windows {
             BtnSave.IsEnabled = false;
         }
 
+        /// <summary>The location of the most recently-saved log file. Ensure file exists before accessing it, as the user may have deleted it.</summary>
         FileInfo _Saved = null;
+
+        /// <summary>Handles the <c>Click</c> event of the <see cref="BtnSave"/> control.
+        /// <para/>Saves the currently-displayed messages to a file on the desktop.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BtnSave_Click(object Sender, RoutedEventArgs E) {
             string T = TextBlock.Text;
             if (T.IsNullOrEmpty()) { return; }
@@ -87,6 +124,10 @@ namespace Osu_BackgroundPurge.Windows {
             BtnOpen.IsEnabled = _Saved.Exists();
         }
 
+        /// <summary>Handles the <c>Click</c> event of the <see cref="BtnOpen"/> control.
+        /// <para/>Opens the most recently saved log file in the default system Text Editor.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         void BtnOpen_Click(object Sender, RoutedEventArgs E) {
             if (_Saved.Exists()) {
                 Process.Start(_Saved.FullName); //Opens the log file with the default text editor
@@ -97,10 +138,20 @@ namespace Osu_BackgroundPurge.Windows {
             }
         }
 
+        /// <summary>Updates the visibility of the specified <paramref name="Lbl"/>, relative to <see cref="DisplayToolBarInfo"/>.</summary>
+        /// <param name="Lbl">The label.</param>
         public void UpdateLabelVisibility(Label Lbl) => Lbl.Visibility = DisplayToolBarInfo ? Visibility.Visible : Visibility.Collapsed;
 
+        /// <summary>Handles the <c>Closed</c> event of this instance.
+        /// <para/>Removes the assigned <see cref="LogWindow_OnLog(string, string, DateTime)"/> delegate method from <see cref="LogEvent"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="EventArgs"/> instance containing the event data.</param>
         void MetroWindow_Closed(object Sender, EventArgs E) => LogEvent -= LogWindow_OnLog;
 
+        /// <summary>Logs the specified message.</summary>
+        /// <param name="Message">The message.</param>
+        /// <param name="Category">The category.</param>
+        /// <param name="SendTime">The send time.</param>
         public static void Log(string Message, string Category = "INFO", DateTime? SendTime = null) {
             LogEvent?.Invoke(Message, Category, SendTime ?? DateTime.Now);
 
@@ -109,7 +160,13 @@ namespace Osu_BackgroundPurge.Windows {
             #endif
         }
 
+        /// <summary>The welcome message.</summary>
         static readonly string _WelcomeMessage = $">> Running Osu!BackgroundPurge v{Assembly.GetEntryAssembly().GetName().Version} <<";
+
+        /// <summary>Handles the <c>IsVisibleChanged</c> event of this instance.
+        /// <para/>Logs the <see cref="_WelcomeMessage"/>, showing the currently-installed version.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         void MetroWindow_IsVisibleChanged(object Sender, DependencyPropertyChangedEventArgs E) {
             if (TextBlock.Text.IsNullOrEmpty()) {
                 Log(_WelcomeMessage, "INIT");

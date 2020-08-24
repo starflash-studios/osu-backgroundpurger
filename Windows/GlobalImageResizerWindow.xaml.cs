@@ -21,7 +21,12 @@ using Osu_BackgroundPurge.UserControls;
 #endregion
 
 namespace Osu_BackgroundPurge.Windows {
+    /// <summary>A <see cref="Window"/> allowing the user to specify image resize options for this application.</summary>
+    /// <seealso cref="MahApps.Metro.Controls.MetroWindow" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
+    /// <seealso cref="Pages.OverrideBackgroundsPage" />
     public partial class GlobalImageResizerWindow {
+        /// <summary>Initialises a new instance of the <see cref="GlobalImageResizerWindow"/> class.</summary>
         public GlobalImageResizerWindow() {
             InitializeComponent();
 
@@ -29,10 +34,16 @@ namespace Osu_BackgroundPurge.Windows {
             _Ready = true;
         }
 
+        /// <summary>Whether or not this instance is ready to be used.
+        /// <para/>If <c>false</c>, <see cref="BtnSave_Click(object, RoutedEventArgs)"/> events are ignored.</summary>
         bool _Ready = false;
 
+        /// <summary>Gets the open windows of type <typeparamref name="T"/>.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><see cref="IEnumerable{T}"/></returns>
         public static IEnumerable<T> GetOpenWindows<T>() where T : Window => Application.Current.Windows.Cast<Window>().Where(Window => Window.GetType() == typeof(T)).Cast<T>();
 
+        /// <summary>Resets the image resize options to the default settings.</summary>
         public static void Reset() {
             CompositingMode = CompositingMode.SourceCopy;
             CompositingQuality = CompositingQuality.HighQuality;
@@ -46,6 +57,7 @@ namespace Osu_BackgroundPurge.Windows {
             }
         }
 
+        /// <summary>Updates the relative UI dropdowns to their related properties.</summary>
         public void UpdateUI() {
             BtnSave.IsEnabled = false;
 
@@ -61,55 +73,65 @@ namespace Osu_BackgroundPurge.Windows {
 
         #region Properties
 
+        /// <summary>Gets or sets the image resizer's compositing mode.</summary>
+        /// <value>The compositing mode <see cref="CompositingMode"/>.</value>
         public static CompositingMode CompositingMode {
-            get => GetEnum<CompositingMode>(Settings.Default.CompositingMode);
+            get => Settings.Default.CompositingMode.ConvertToEnum(CompositingMode.SourceCopy);
             set {
                 Settings.Default.CompositingMode = (int)value;
                 Settings.Default.Save();
             }
         }
 
+        /// <summary>Gets or sets the image resizer's compositing quality.</summary>
+        /// <value>The compositing quality <see cref="CompositingQuality"/>.</value>
         public static CompositingQuality CompositingQuality {
-            get => GetEnum<CompositingQuality>(Settings.Default.CompositingQuality);
+            get => Settings.Default.CompositingQuality.ConvertToEnum(CompositingQuality.HighQuality);
             set {
                 Settings.Default.CompositingQuality = (int)value;
                 Settings.Default.Save();
             }
         }
 
+        /// <summary>Gets or sets the image resizer's interpolation mode.</summary>
+        /// <value>The interpolation mode <see cref="InterpolationMode"/>.</value>
         public static InterpolationMode InterpolationMode {
-            get => GetEnum<InterpolationMode>(Settings.Default.InterpolationMode);
+            get => Settings.Default.InterpolationMode.ConvertToEnum(InterpolationMode.HighQualityBicubic);
             set {
                 Settings.Default.InterpolationMode = (int)value;
                 Settings.Default.Save();
             }
         }
 
+        /// <summary>Gets or sets the image resizer's smoothing mode.</summary>
+        /// <value>The smoothing mode <see cref="SmoothingMode"/>.</value>
         public static SmoothingMode SmoothingMode {
-            get => GetEnum<SmoothingMode>(Settings.Default.SmoothingMode);
+            get => Settings.Default.SmoothingMode.ConvertToEnum(SmoothingMode.HighQuality);
             set {
                 Settings.Default.SmoothingMode = (int)value;
                 Settings.Default.Save();
             }
         }
 
+        /// <summary>Gets or sets the image resizer's pixel offset mode.</summary>
+        /// <value>The pixel offset mode <see cref="PixelOffsetMode"/>.</value>
         public static PixelOffsetMode PixelOffsetMode {
-            get => GetEnum<PixelOffsetMode>(Settings.Default.PixelOffsetMode);
+            get => Settings.Default.PixelOffsetMode.ConvertToEnum(PixelOffsetMode.HighQuality);
             set {
                 Settings.Default.PixelOffsetMode = (int)value;
                 Settings.Default.Save();
             }
         }
 
+        /// <summary>Gets or sets the image resizer's wrap mode.</summary>
+        /// <value>The wrap mode <see cref="WrapMode"/>.</value>
         public static WrapMode WrapMode {
-            get => GetEnum<WrapMode>(Settings.Default.WrapMode);
+            get => Settings.Default.WrapMode.ConvertToEnum(WrapMode.TileFlipXY);
             set {
                 Settings.Default.WrapMode = (int)value;
                 Settings.Default.Save();
             }
         }
-
-        public static T GetEnum<T>(int PropertyValue) where T : struct, Enum => (T)Enum.ToObject(typeof(T), PropertyValue);
 
         #endregion
 
@@ -125,10 +147,20 @@ namespace Osu_BackgroundPurge.Windows {
             WrapMode = (WrapMode)DpdWrapMode.GetValue();
         }
 
+        /// <summary>Gets the selected enum value (of type <typeparamref name="T"/>) from the specified <paramref name="Dropdown"/>.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Dropdown">The dropdown.</param>
+        /// <returns><typeparamref name="T"/></returns>
         public static T GetValue<T>(EnumDropdown Dropdown) where T : struct, Enum => (T?)Dropdown?.GetValue() ?? default;
 
+        /// <summary>Handles the <c>SelectionChanged</c> event of the dropdown controls.
+        /// <para/>Enables/Disables the <see cref="BtnSave"/> control relative to whether or not the window <see cref="HasUnsavedChanges"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="EnumSelectionChangedArgs"/> instance containing the event data.</param>
         void Dpd_SelectionChanged(object Sender, EnumSelectionChangedArgs E) => BtnSave.IsEnabled = _Ready && HasUnsavedChanges();
 
+        /// <summary>Determines whether or not the window has unsaved changes.</summary>
+        /// <returns><c>True</c> if there are unsaved changes; otherwise, <c>false</c>.</returns>
         public bool HasUnsavedChanges() => CompositingMode != GetValue<CompositingMode>(DpdCmpstMode)
                                            || CompositingQuality != GetValue<CompositingQuality>(DpdCmpstQual)
                                            || InterpolationMode != GetValue<InterpolationMode>(DpdInterpMode)
@@ -136,6 +168,9 @@ namespace Osu_BackgroundPurge.Windows {
                                            || PixelOffsetMode != GetValue<PixelOffsetMode>(DpdPxlOffsetMode)
                                            || WrapMode != GetValue<WrapMode>(DpdWrapMode);
 
+        /// <summary>Handles the <c>Closing</c> event of this instance.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
         void MetroWindow_Closing(object Sender, CancelEventArgs E) {
             if (HasUnsavedChanges()) {
                 // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault

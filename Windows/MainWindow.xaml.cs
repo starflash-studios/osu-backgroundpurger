@@ -21,11 +21,15 @@ using Osu_BackgroundPurge.Pages;
 #endregion
 
 namespace Osu_BackgroundPurge.Windows {
+    /// <summary>The main window for the program. This is the first thing the user sees.</summary>
+    /// <seealso cref="MahApps.Metro.Controls.MetroWindow" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class MainWindow {
         //TODO: Add beatmap folder function to OsuFileSystem.cs
         //TODO: Add skins   folder function to OsuFileSystem.cs
         //TODO: Implement systems into Osu!ModeManager as well.
 
+        /// <summary>Initialises a new instance of the <see cref="MainWindow"/> class.</summary>
         public MainWindow() {
             InitializeComponent();
 
@@ -69,6 +73,10 @@ namespace Osu_BackgroundPurge.Windows {
             ////Test();
         }
 
+        /// <summary>Handles the <c>DispatcherUnhandledException</c> event of this <see cref="Window"/>.
+        /// <para/>Calls <see cref="ExceptionWindow.Catch(Exception)"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="DispatcherUnhandledExceptionEventArgs"/> instance containing the event data.</param>
         static void Current_DispatcherUnhandledException(object Sender, DispatcherUnhandledExceptionEventArgs E) => ExceptionWindow.Catch(E.Exception);
 
         // ReSharper disable once FunctionRecursiveOnAllPaths
@@ -107,7 +115,13 @@ namespace Osu_BackgroundPurge.Windows {
         //    Test();
         //}
 
-        static OverrideBackgroundsPage _RBPage;
+        /// <summary>The currently open <see cref="OverrideBackgroundsPage"/>.</summary>
+        static OverrideBackgroundsPage _OBPage;
+
+        /// <summary>Handles the <c>SelectionChanged</c> event of the <see cref="TabControl"/> control.
+        /// <para/>Calls <see cref="SwapTab(Tab)"/> with the currently active <see cref="Tab"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         void TabControl_SelectionChanged(object Sender, SelectionChangedEventArgs E) {
             if (Sender == null || !(Sender is TabControl TC)) { return; }
 
@@ -115,13 +129,17 @@ namespace Osu_BackgroundPurge.Windows {
             SwapTab(T);
         }
 
+        /// <summary>Swaps the tab to the given <paramref name="T"/>.
+        /// <para/>Calls <see cref="Frame.Navigate(object)"/> on the <see cref="MainFrame"/>, navigating to the relevant page.</summary>
+        /// <param name="T">The <see cref="Tab"/> to swap to.</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void SwapTab(Tab T) {
             switch (T) {
                 case Tab.RemoveBackgrounds: //'Remove Backgrounds' tab
                     Debug.WriteLine("Changed to Remove Backgrounds tab");
-                    if (_RBPage == null) { _RBPage = new OverrideBackgroundsPage(); }
+                    if (_OBPage == null) { _OBPage = new OverrideBackgroundsPage(); }
                     //RemoveBackgroundsFrame.Navigate(new Uri("Windows/RemoveBackgroundsWindow.xaml", UriKind.Relative));
-                    MainFrame.Navigate(_RBPage);
+                    MainFrame.Navigate(_OBPage);
                     break;
                 // ReSharper disable once RedundantCaseLabel
                 case Tab.Unknown:
@@ -130,13 +148,19 @@ namespace Osu_BackgroundPurge.Windows {
             }
         }
 
+        /// <summary>The known tabs supporting navigation.</summary>
         public enum Tab {
+            /// <summary>Represents an unknown tab.</summary>
             Unknown = 0,
+            /// <summary>Represents the 'Remove Backgrounds' tab.</summary>
             RemoveBackgrounds = 1
         }
 
-        //If user presses the key-sequence 'CTRL + L', open the Log Viewer.
-        //If user presses the key-sequence 'CTRL + E', open the Exception Viewer.
+        /// <summary>Handles the <c>PreviewKeyDown</c> event of this (<see cref="MahApps.Metro.Controls.MetroWindow"/>) control.
+        /// <para/>If the user presses the key-sequence 'CTRL + L', the Log Viewer is opened.
+        /// <para/>Alternatively, if the user presses the key-sequence 'CTRL + E', the Exception Viewer is opened.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
         void MetroWindow_PreviewKeyDown(object Sender, KeyEventArgs E) {
             bool Control = Keyboard.IsKeyDown(Key.LeftCtrl);
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
@@ -155,6 +179,10 @@ namespace Osu_BackgroundPurge.Windows {
             }
         }
 
+        /// <summary>Handles the <c>Closed</c> event of this (<see cref="MahApps.Metro.Controls.MetroWindow"/>) control.
+        /// <para/>Closes all active <see cref="Window"/>s within the current <see cref="Application"/>.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="EventArgs"/> instance containing the event data.</param>
         void MetroWindow_Closed(object Sender, EventArgs E) {
             WindowCollection Windows = Application.Current.Windows;
             foreach (Window W in from Window W in Windows where W != this select W) {
@@ -162,7 +190,11 @@ namespace Osu_BackgroundPurge.Windows {
             }
         }
 
-        // ReSharper disable once AsyncConverter.AsyncAwaitMayBeElidedHighlighting
+        // ReSharper disable once AsyncConverter.AsyncAwaitMayBeElidedHighlighting        
+        /// <summary>Asynchronously handles the <c>Loaded</c> event of this (<see cref="MahApps.Metro.Controls.MetroWindow"/>) control.
+        /// <para/>Calls <see cref="UpdateWindow"/>.<see cref="UpdateWindow.CreateAsync(Window)"/> to ensure the application checks for any available updates, and notifies the user if one is available.</summary>
+        /// <param name="Sender">The source of the event.</param>
+        /// <param name="E">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         async void MetroWindow_Loaded(object Sender, RoutedEventArgs E) => await UpdateWindow.CreateAsync(this).ConfigureAwait(false);
     }
 }

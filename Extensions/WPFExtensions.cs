@@ -21,6 +21,7 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 #endregion
 
 namespace Osu_BackgroundPurge {
+    /// <summary>A collection of numerous extensions for WPF-related variables.</summary>
     public static class WPFExtensions {
 
         #region Bitmap
@@ -156,13 +157,18 @@ namespace Osu_BackgroundPurge {
 
         #endregion
 
-        /// <summary>Sets the visibility of the given <see cref="Element"/>.</summary>
+        /// <summary>Sets the visibility of the given <paramref name="Element"/>.</summary>
         /// <param name="Element">The element.</param>
         /// <param name="Visibility">The visibility.</param>
         public static void SetVisibility(this UIElement Element, Visibility Visibility) {
             if (Element != null) { Element.Visibility = Visibility; }
         }
 
+        /// <summary>Tries to return a previously-initialised window of type <typeparamref name="T"/>.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="App">The application.</param>
+        /// <param name="Found">The found <see cref="Window"/> (of type <typeparamref name="T"/>).</param>
+        /// <returns><see cref="bool"/></returns>
         public static bool TryGetWindow<T>(this Application App, out T Found) where T : Window {
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             foreach(Window OpenWindow in App.Windows) {
